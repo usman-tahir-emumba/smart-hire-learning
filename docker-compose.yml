@@ -1,0 +1,54 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-smarthire}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-smarthire}
+      POSTGRES_DB: ${POSTGRES_DB:-smarthire}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-smarthire} -d ${POSTGRES_DB:-smarthire}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  migrate:
+    build:
+      context: ./backend
+    command: ["npm", "run", "migration:run:prod"]
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-smarthire}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-smarthire}
+      DB_NAME: ${POSTGRES_DB:-smarthire}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    build:
+      context: ./backend
+    environment:
+      PORT: 8000
+      NODE_ENV: production
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-smarthire}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-smarthire}
+      DB_NAME: ${POSTGRES_DB:-smarthire}
+      MAX_PAGE_SIZE: 100
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  db_data:
