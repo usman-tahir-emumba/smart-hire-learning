@@ -1,7 +1,7 @@
-# Agent working files (not part of the deliverable)
 .scratch/
+.claude
 CLAUDE.md
-docs/agents/
+docs/
 
 # Node
 node_modules/
