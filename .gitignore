@@ -1,11 +1,10 @@
 .scratch/
 .claude
 CLAUDE.md
-docs/
+/docs/
 
 # Node
 node_modules/
 dist/
 *.log
 .env
-docs
