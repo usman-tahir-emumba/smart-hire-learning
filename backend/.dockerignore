@@ -1,0 +1,8 @@
+.env
+*.log
+coverage
+.git
+src
+tests
+tsconfig*.json
+jest.config.js

@@ -1,0 +1,11 @@
+# Agent working files (not part of the deliverable)
+.scratch/
+CLAUDE.md
+docs/agents/
+
+# Node
+node_modules/
+dist/
+*.log
+.env
+docs
